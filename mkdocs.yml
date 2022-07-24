@@ -1,0 +1,13 @@
+# theme options: readthedocs, material
+site_name: Sundeep Notes
+theme: 
+  name: readthedocs
+  features:
+    - navigation.tabs
+nav:
+  - 'DS & Algo': 
+    - 'Stack': ds_and_algo/stack.md
+    - 'Queue': ds_and_algo/queue.md
+    - 'Graph': ds_and_algo/graph.md
+  - 'System Design':
+    - 'Useful Links': system_design/material.md
