@@ -6,7 +6,7 @@ theme:
     - navigation.tabs
 nav:
   - 'DS & Algo': 
-    - 'Prefix Sum': ds_and_algo/stack.md
+    - 'Prefix Sum': ds_and_algo/prefix_sum.md
     - 'Two Pointers': ds_and_algo/two_pointers.md
   - 'System Design':
     - 'Useful Links': system_design/useful_links.md
