@@ -49,11 +49,11 @@ Time Complexity: O(logn)
 
 # Variations of Binary Search
 In the one dimensional array, we can observe the following patterns of binary search  
-1. Index of a key
-2. Index the left most key (or first target key) if duplicates are present
-3. Index the right most Key (or last target key) if duplicates are present
-4. Index of the least element greater than key
-5. Index of the greatest element lesser than key
+1. Index of a key  
+2. Index the left most key (or first target key) if duplicates are present  
+3. Index the right most Key (or last target key) if duplicates are present  
+4. Index of the least element greater than key  
+5. Index of the greatest element lesser than key  
 
 
 ## 1. Index of a key
