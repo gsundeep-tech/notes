@@ -49,14 +49,17 @@ Time Complexity: O(logn)
 
 # Variations of Binary Search
 In the one dimensional array, we can observe the following patterns of binary search  
-1. Index of a key  
-2. Index the left most key (or first target key) if duplicates are present  
-3. Index the right most Key (or last target key) if duplicates are present  
-4. Index of the least element greater than key  
-5. Index of the greatest element lesser than key  
+1. Single Value Comparison  
+   1. Index of a key  
+   2. Index the left most key (or first target key) if duplicates are present  
+   3. Index the right most Key (or last target key) if duplicates are present  
+   4. Index of the least element greater than key  
+   5. Index of the greatest element lesser than key  
+2. Two Values Comparison
+   1. Peaks in the given Array  
 
 
-## 1. Index of a key
+## 1.1 Index of a key
 
 use the basic syntax to find the key
 
@@ -80,7 +83,7 @@ def binary_search(low, high, nums, target):
 Space Complexity: O(1)  
 Time Complexity: O(logn)
 
-## 2. Index the left most key (or first target key) if duplicates are present
+## 1.2 Index the left most key (or first target key) if duplicates are present
 
 As we want to search for the left most key or the first key, we need to decrease the right value so that out window is closer to the left side of the nums 
 
@@ -104,7 +107,7 @@ def binary_left_search(low, high, nums, target):
 Space Complexity: O(1)  
 Time Complexity: O(logn)
 
-## 3. Index the right most key (or last target key) if duplicates are present
+## 1.3 Index the right most key (or last target key) if duplicates are present
 
 As we want to search for the right most key or the last key, we need to increase the left value so that out window is closer to the right side of the nums 
 
@@ -128,7 +131,7 @@ def binary_right_search(low, high, nums, target):
 Space Complexity: O(1)  
 Time Complexity: O(logn)
 
-## 4. Index of the least element greater than key
+## 1.4 Index of the least element greater than key
 
 ``` python
 def binary_greater_search(low, high, nums, target):
@@ -152,7 +155,7 @@ def binary_greater_search(low, high, nums, target):
 Space Complexity: O(1)  
 Time Complexity: O(logn)
 
-## 5. Index of the greatest element lesser than key
+## 1.5 Index of the greatest element lesser than key
 
 ``` python
 def binary_lesser_search(low, high, nums, target):
@@ -176,6 +179,29 @@ def binary_lesser_search(low, high, nums, target):
 Space Complexity: O(1)  
 Time Complexity: O(logn)
 
+
+## 2.1 Get any peak in the array
+
+``` python
+def binary_lesser_search(low, high, nums, target):
+    # As we are supposed to compare the current mid with the beside element, then we need to use < rather than <= 
+    # Note: <= is used for one value comparison and < can be used for two values comparison (mid and mid-1)
+    while low < high:
+        mid = low + (high - low + 1) // 2
+        if nums[mid-1] < nums[mid]:
+            # this can be the peak, so we are not incrementing by 1
+            low = mid
+        else:
+            # As we know that mid - 1 value is higher so we are in the lower end so we need to shift our right
+            high = mid - 1
+
+    return left
+```
+
+Space Complexity: O(1)  
+Time Complexity: O(logn)
+
+
 # TODO
 - Search for more articles and add more content
 
@@ -185,3 +211,4 @@ Time Complexity: O(logn)
 
 # Related Problems
 - [https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+- [https://leetcode.com/problems/find-peak-element/](https://leetcode.com/problems/find-peak-element/) , two values comparison problem
