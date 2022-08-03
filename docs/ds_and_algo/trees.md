@@ -280,3 +280,97 @@ class Nums:
         return self._merge(leftQuery, rightQuery) # this operation is dependent on the question, here we are doing sum
 
 ```
+
+The above program is a recursive way, we can write the same in non recursive way as well. Following is the code example
+
+```python
+
+class Nums:
+    """
+    This is a non recursive way of implementing the segment tree, Much efficient way is described in this https://www.geeksforgeeks.org/segment-tree-efficient-implementation/
+    References: Editorial section of https://leetcode.com/problems/range-sum-query-mutable/solution/ 
+    """
+    def __init__(self, nums):
+        self.nums = nums 
+        self.nums_length = len(nums)
+        self.tree = [0] * (2 * self.nums_length) # 0 to n -1 would be root nodes and n to 2 * n would be the input numbers which will be child nodes
+        self._build_tree()
+    
+    def _merge(self, val1, val2):
+        """
+        Here we are trying to sum the values, for min segment tree, we need to find the min between the values
+        """
+        return val1 + val2
+
+    def _build_tree(self):
+        # child nodes start from the nums_length index
+        for i in range(self.nums_length, 2*self.nums_length):
+            self.tree[i] = self.nums[i-self.nums_length]
+        
+        # parent nodes, will occupy the starting positions, total number of nodes is (2*n - 1)
+        for i in range(self.nums_length -1, -1, 0):
+            self.tree[i] = self._merge(self.tree[2*i], self.tree[2*i + 1])
+    
+    def update_idx(self, idx, value):
+        idx += self.nums_length # map index to the second half to upate the node 
+        self.tree[idx] = value
+        """
+        Lets understand by taking an example
+        nums = [2,4,7,11]
+        tree = [0, 24, 6, 18, 2, 4, 7, 11]
+
+        udpate idx = 3, val = 5
+        step 1 : [0, 24, 6, 18, 2, 4, 7, 5] # updating the value at idx + nums_length
+                  idx = 7
+        Go into the loop
+
+        Step 2: 
+                left = 6, right = 7
+                tree[7//2] = tree[3] = tree[6] + tree[7] = 7 + 5 = 12
+                [0, 24, 6, 12, 2, 4, 7, 5] # updating the value at 3rd idx
+        
+        step 3: idx = 3
+                right = 3, left = 2
+                tree[1] = tree[3] + tree[2] = 18
+                [0, 18, 6, 12, 2, 4, 7, 5] # updating the value at 3rd idx
+        
+        step 4: idx = 1
+                right = 1, left = 0
+                update at 0 index # anyways this won't be used
+        """
+
+        while idx > 0:
+            left = idx
+            right = idx
+            if idx % 2 == 0:
+                right = idx + 1
+            else:
+                left = idx - 1
+            self.tree[idx // 2] = self.tree[left] + self.tree[right]
+            idx //= 2
+    
+    def query_range(self, start, end):
+        start += self.nums_length
+        end += self.nums_length
+
+        total = 0
+        while start <= end:
+            if start % 2 == 0:
+                total += self.tree[left]
+                start += 1
+            
+            if end % 2 == 0:
+                total += self.tree[right]
+                end -= 1
+            
+            start //= 2
+            end //= 2
+        return total
+```
+
+# TODO
+Need to complete the comments
+
+## 2. Binary Index tree - Fenwick Tree
+
+Reference: https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/Java-using-Binary-Indexed-Tree-with-clear-explanation
