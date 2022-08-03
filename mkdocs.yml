@@ -7,6 +7,8 @@ theme:
 nav:
   - 'DS & Algo': 
     - 'Binary Search': ds_and_algo/binary_search.md
+    - 'Trees': ds_and_algo/trees.md
+    - 'Square Root Decomposition': ds_and_algo/sqrt_decomposition.md
     - 'Prefix Sum': ds_and_algo/prefix_sum.md
     - 'Two Pointers': ds_and_algo/two_pointers.md
   - 'System Design':
