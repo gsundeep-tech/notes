@@ -49,7 +49,7 @@ Time Complexity: O(logn)
 
 # Variations of Binary Search
 In the one dimensional array, we can observe the following patterns of binary search  
-1. [Single Value Comparison](#single-value-comparison)  
+1. [Single Value Comparison](#single-value-comparison)    
     1. [Index of a key](#11-index-of-a-key)  
     2. [Index the left most key (or first target key) if duplicates are present](#12-index-the-left-most-key-or-first-target-key-if-duplicates-are-present)  
     3. [Index the right most Key (or last target key) if duplicates are present](#13-index-the-right-most-key-or-last-target-key-if-duplicates-are-present)  
