@@ -55,15 +55,16 @@ In the one dimensional array, we can observe the following patterns of binary se
    3. Index the right most Key (or last target key) if duplicates are present  
    4. Index of the least element greater than key  
    5. Index of the greatest element lesser than key  
-2. Two Values Comparison
-   1. Comparing the adjacent elements - Peaks in the given Array
+2. Two Values Comparison  
+   1. Comparing the adjacent elements - Peaks in the given Array  
    2. Comparing with the end elements - Find the index where the array is rotated  
-3. Three Values Comparison
-   1. Finding the range - Find the start and end index of target
+3. Three Values Comparison  
+   1. Finding the range - Find the start and end index of target  
 
 
 
-## 1.1 Index of a key
+# Single Value Comparison  
+## Index of a key
 
 use the basic syntax to find the key
 
