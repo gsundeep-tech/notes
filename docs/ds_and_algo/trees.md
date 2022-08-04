@@ -1,7 +1,7 @@
 # Variations of Trees
 
 1. Segment Tree
-2. Binary Index Tree (Fenwick Tree) 
+2. Binary Index Tree - Fenwick Tree 
 3. AVL Trees
 4. Red black trees
 
@@ -371,9 +371,6 @@ class Nums:
         return total
 ```
 
-# TODO
-Need to complete the comments
-
-## Binary Index Tree (Fenwick Tree) 
+## Binary Index Tree - Fenwick Tree 
 
 Reference: https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/Java-using-Binary-Indexed-Tree-with-clear-explanation
