@@ -1,4 +1,4 @@
-# TODO
+# Variations of Trees
 
 1. Segment Tree
 2. Binary Index Tree (Fenwick Tree) 
@@ -187,8 +187,10 @@ class Nums:
     def _merge_lazy(self, start, end, tree_idx):
         """
         Writing this method for the range sum queries and updates, but calculating the min and max in the range, it would be different
+
+        reason for multiplying the (end - start + 1) is as we are summing those many nodes with the value, we are directly calculating the product and updating the value in the node, if both start and end are equal then value will be inserted otherwise for every other root node, we'll update by the number of child nodes
         """
-        return (end - start + 1) * self.lazy[tree_idx] # reason for multiplying the (end - start + 1) is as we are summing those many nodes with the value, we are directly calculating the product and updating the value in the node, if both start and end are equal then value will be inserted otherwise for every other root node, we'll update by the number of child nodes
+        return (end - start + 1) * self.lazy[tree_idx] 
 
 
     def update_index_lazily(self, tree_idx, start, end, start_range, end_range, val):
@@ -200,7 +202,8 @@ class Nums:
         2. Update [2, 3] with -8
         3. Update [3, 4] with 2
 
-        In the above range updates, element 3 is being updated 3 times, rather than updating at the same time which would increase our time complexity to nlogn for single range update 
+        In the above range updates, element 3 is being updated 3 times, 
+        rather than updating at the same time which would increase our time complexity to nlogn for single range update 
         """
         if self.lazy[tree_idx] != 0: # this means we have some pending updates
             
@@ -371,6 +374,6 @@ class Nums:
 # TODO
 Need to complete the comments
 
-## 2. Binary Index tree - Fenwick Tree
+## Binary Index Tree (Fenwick Tree) 
 
 Reference: https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/Java-using-Binary-Indexed-Tree-with-clear-explanation
