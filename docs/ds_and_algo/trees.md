@@ -14,6 +14,8 @@ Problem: Given a array of integers, User would perform two operations
 1. update an index in the array 
 2. request the sum of a range in the array
 
+Leetcode Problem: [https://leetcode.com/problems/range-sum-query-mutable/](https://leetcode.com/problems/range-sum-query-mutable/)
+
 The brute force way of solving the above problem is 
 
 ```python
@@ -94,9 +96,9 @@ class Nums:
     def __init__(self, nums):
         self.nums = nums 
         self.nums_length = len(nums)
-        self.tree = [0] * (2 * self.nums_length) # 0 to n -1 would be root nodes and n to 2 * n would be the input numbers which will be child nodes
+        self.tree = [0] * (4 * self.nums_length) # 0 to n -1 would be root nodes and n to 2 * n would be the input numbers which will be child nodes, for recursive solutions 4*n nodes are required
         self._build_tree(0, 0, self.nums_length - 1)
-        self.lazy = [0] * (2 * self.nums_length) # this would be used for lazily updating the range queries
+        self.lazy = [0] * (4 * self.nums_length) # this would be used for lazily updating the range queries
 
     def _build_tree(self, tree_idx, start, end):
 
@@ -116,7 +118,7 @@ class Nums:
         """
 
         if start == end:
-            self.tree[tree_idx] = start
+            self.tree[tree_idx] = self.nums[start]
             return
 
         mid = start + (end - start) // 2
@@ -130,19 +132,19 @@ class Nums:
         """
         return val1 + val2
 
-    def update_index(self, tree_idx, start, end, arr_idx, value):
+    def update_index(self, tree_idx, start_idx, end_idx, arr_idx, value):
         # this place arry_idx will also be equal
-        if start == end:
+        if start_idx == end_idx:
             self.tree[tree_idx] = value
             return
         
-        mid = start + (end - start) // 2
+        mid = start_idx + (end_idx - start_idx) // 2
         if arr_idx > mid:
-            self.update_index(2*tree_idx + 2, mid + 1, end, arr_idx, value)
+            self.update_index(2*tree_idx + 2, mid + 1, end_idx, arr_idx, value)
         elif arr_idx <= mid:
-            self.update_index(2*tree_idx + 1, start, mid, arr_idx, value)
+            self.update_index(2*tree_idx + 1, start_idx, mid, arr_idx, value)
         
-        tree[tree_idx] = self._merge(self.tree[2*tree_idx + 1], self.tree[2*tree_idx + 2])
+        self.tree[tree_idx] = self._merge(self.tree[2*tree_idx + 1], self.tree[2*tree_idx + 2])
         
     
     def query_range(self, tree_idx, start_idx, end_idx, query_start, query_end):
@@ -162,7 +164,7 @@ class Nums:
         
 
         # if partial overlap
-        mid = start + (end - start) // 2
+        mid = start_idx + (end_idx - start_idx) // 2
 
         if query_start > mid:
             return self.query_range(2*tree_idx + 2, mid + 1, end_idx, query_start, query_end)
@@ -291,7 +293,9 @@ The above program is a recursive way, we can write the same in non recursive way
 class Nums:
     """
     This is a non recursive way of implementing the segment tree, Much efficient way is described in this https://www.geeksforgeeks.org/segment-tree-efficient-implementation/
-    References: Editorial section of https://leetcode.com/problems/range-sum-query-mutable/solution/ 
+    References: 
+    1. Editorial section of https://leetcode.com/problems/range-sum-query-mutable/solution/ 
+    2. https://github.com/jakobkogler/Algorithm-DataStructures/blob/master/RangeQuery/SegmentTree.py (https://leetcode.com/problems/range-sum-query-mutable/discuss/646774/Segment-tree-recursive-iterative-Binary-index-iterative-explained)
     """
     def __init__(self, nums):
         self.nums = nums 
@@ -315,8 +319,7 @@ class Nums:
             self.tree[i] = self._merge(self.tree[2*i], self.tree[2*i + 1])
     
     def update_idx(self, idx, value):
-        idx += self.nums_length # map index to the second half to upate the node 
-        self.tree[idx] = value
+
         """
         Lets understand by taking an example
         nums = [2,4,7,11]
@@ -337,12 +340,13 @@ class Nums:
                 tree[1] = tree[3] + tree[2] = 18
                 [0, 18, 6, 12, 2, 4, 7, 5] # updating the value at 3rd idx
         
-        step 4: idx = 1
-                right = 1, left = 0
-                update at 0 index # anyways this won't be used
+        In the next iteration idx is 1 so loop will stop
         """
 
-        while idx > 0:
+        idx += self.nums_length # map index to the second half to upate the node 
+        self.tree[idx] = value
+
+        while idx > 1:
             left = idx
             right = idx
             if idx % 2 == 0:
@@ -353,24 +357,45 @@ class Nums:
             idx //= 2
     
     def query_range(self, start, end):
+        """
+        let's understand with the example
+        nums = [2,4,7,11]
+        tree = [0, 24, 6, 18, 2, 4, 7, 11]
+
+        Query range = [1, 3] // starting with zero index, so final answer should be 4+7+11=22
+        step1:
+            start = 5, end = 8
+        step 2:
+            total += tree[start] => total += 4 => total = 4, update start += 1 => start = 6 
+            start = 3, end = 4
+        step 3:
+            total += tree[start] => total += 18 => total = 22, start = 4
+            start = 2, end = 2
+        As the start not less than end, loop will get terminated
+
+        """
         start += self.nums_length
-        end += self.nums_length
+        end += (self.nums_length + 1)
 
         total = 0
-        while start <= end:
-            if start % 2 == 0:
-                total += self.tree[left]
+        while start < end:
+            if start % 2 == 1:
+                total += self.tree[start]
                 start += 1
             
-            if end % 2 == 0:
-                total += self.tree[right]
+            if end % 2 == 1:
                 end -= 1
-            
+                total += self.tree[end]
+                
             start //= 2
             end //= 2
         return total
 ```
 
+Complete Working Code can be found from [here](https://leetcode.com/submissions/detail/765114614/)
+
 ## Binary Index Tree - Fenwick Tree 
+
+Binary Index Tree uses the binary representation of the indexes to store the values in the tree. Following the sample implementation. Binary Index Tree is also used for solving the range queries
 
 Reference: https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/Java-using-Binary-Indexed-Tree-with-clear-explanation
