@@ -55,6 +55,7 @@ In the one dimensional array, we can observe the following patterns of binary se
             3. [Index the right most Key (or last target key) if duplicates are present](#13-index-the-right-most-key-or-last-target-key-if-duplicates-are-present)  
             4. [Index of the least element greater than key](#14-index-of-the-least-element-greater-than-key)  
             5. [Index of the greatest element lesser than key](#15-index-of-the-greatest-element-lesser-than-key)  
+            6. [Nearest element to the target element](#16-nearest-element-to-the-target)
 2. Two Values Comparison  
             1. [Comparing the adjacent elements - Peaks in the given Array](#21-get-any-peak-in-the-array)  
             2. [Comparing with the end elements - Find the index where the array is rotated](#22-find-the-index-where-array-is-rotated)  
@@ -182,7 +183,32 @@ def binary_lesser_search(low, high, nums, target):
 Space Complexity: O(1)  
 Time Complexity: O(logn)
 
+## 1.6 Nearest element to the target
 
+``` python
+def binary_nearest_search(low, high, nums, target):
+    """
+    perform the regular binary search
+    """
+    while low <= high:
+        mid = low + (high - low + 1) // 2
+        midVal = nums[mid]
+        if midVal == target:
+            return midVal
+        elif midVal > target:
+            high = mid - 1
+        elif midVal < target:
+            low = mid + 1
+    """
+    if the target is present in the nums, we'll return the target but if the target is not present in the nums, following code would be executed, left and right would be already pointing to the two closest elements to target. We need to find which is the closest out of those two. Here we are doing some post processing as well after the binary search.
+    """
+    if abs(target - nums[left]) < abs(target - nums[right]):
+        return nums[left]
+    return nums[right]
+```
+
+Space Complexity: O(1)  
+Time Complexity: O(logn)
 ## 2.1 Get any peak in the array
 
 ``` python
