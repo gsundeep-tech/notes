@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Sorting - Sundeep Notes</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Sorting";
+        var mkdocs_page_input_path = "ds_and_algo/sorting.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Sundeep Notes
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">DS & Algo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../binary_search/">Binary Search</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../trees/">Trees</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sqrt_decomposition/">Square Root Decomposition</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../prefix_sum/">Prefix Sum</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../two_pointers/">Two Pointers</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">System Design</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../system_design/useful_links/">Useful Links</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Sundeep Notes</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Sorting</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <ol>
+<li>Merge Sort</li>
+<li>Heap Sort</li>
+<li>Quick Sort</li>
+<li>Quick Select</li>
+<li>Tim Sort</li>
+</ol>
+<h2 id="4-quick-select">4. Quick Select</h2>
+<p>Quick select is used to sort the first k elements. Any problem to return the kth highest or smallest element we can use the quick select</p>
+<pre><code class="language-python">
+def partition(numbers, left, right, idx):
+    numbers[idx], numbers[right] = numbers[right], numbers[idx]
+
+    swap_idx = left
+    for i in range(left, right):
+        # swap all the lesser elements towards the left side
+        if numbers[i] &lt; numbers[right]:
+            numbers[i], numbers[swap_idx] = numbers[swap_idx], numbers[i]
+            swap_idx += 1
+    numbers[swap_idx], numbers[right] = numbers[right], numbers[swap_idx]
+    return swap_idx 
+
+def quickselect(numbers, left, right, k):
+    if left == right:
+        return numbers[left]
+
+    # any random index can be selected, here we are considering the mid element
+    idx = (left + right) // 2
+
+    idx = partition(numbers, left, right, idx)
+    if idx == k:
+        return numbers[idx]
+
+    if idx &gt; k:
+        return quickselect(numbers, left, idx - 1, k)
+    else:
+        return quickselect(numbers, idx + 1, right, k)
+
+# numbers are sorted from smallest to the largest
+# if we want the second smallest then we can give k-1 as the argument value
+# if we want the second largest then we can give len(numbers) - k as the argument value
+quickselect(numbers, 0, len(numbers)-1, k-1)
+</code></pre>
+<p>Note: Median of Medians is also a selection algorithm we can use as an alternative for quickselect, but from the interviews perspective quickselect would be a good option</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Trees - Sundeep Notes</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Trees";
+        var mkdocs_page_input_path = "ds_and_algo/trees.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Sundeep Notes
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">DS & Algo</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../binary_search/">Binary Search</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Trees</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#segment-tree">Segment Tree</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#binary-index-tree-fenwick-tree">Binary Index Tree - Fenwick Tree</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sqrt_decomposition/">Square Root Decomposition</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../prefix_sum/">Prefix Sum</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../two_pointers/">Two Pointers</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">System Design</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../system_design/useful_links/">Useful Links</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Sundeep Notes</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>DS & Algo &raquo;</li>
+      <li>Trees</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="variations-of-trees">Variations of Trees</h1>
+<ol>
+<li>Segment Tree</li>
+<li>Binary Index Tree - Fenwick Tree </li>
+<li>AVL Trees</li>
+<li>Red black trees</li>
+</ol>
+<h2 id="segment-tree">Segment Tree</h2>
+<p>Let's understand the segment trees and Binary index trees usage by a problem statement</p>
+<p>Problem: Given a array of integers, User would perform two operations
+1. update an index in the array 
+2. request the sum of a range in the array</p>
+<p>Leetcode Problem: <a href="https://leetcode.com/problems/range-sum-query-mutable/">https://leetcode.com/problems/range-sum-query-mutable/</a></p>
+<p>The brute force way of solving the above problem is </p>
+<pre><code class="language-python">
+class Nums:
+    def __init__(self, nums):
+        self.nums = nums
+
+    def update_index(self, idx, value):
+        self.nums[idx] = value
+
+    def query_range(self, start_idx, end_idx):
+        total = 0
+        for i in range(start_idx, end_idx + 1):
+            total += self.nums[i]
+</code></pre>
+<p>Time Complexity: 
+- Update Index: O(1)
+- Query Range: O(n)</p>
+<p>Space Complexity: O(1)</p>
+<p>If there are many queries, i.e., n queries total time complexity for getting query range is n^2 </p>
+<p>Using the prefix sum we can fetch the query range values to O(1). Following is the implementation</p>
+<pre><code class="language-python">
+class Nums:
+    def __init__(self, nums):
+        self.nums = nums
+        self.prefix = []
+        total = 0
+        for num in self.nums:
+            total += num
+            self.prefix.append(total)
+
+    def update_index(self, idx, value):
+        diff = value - self.nums[idx]
+        self.nums[idx] = value
+        for i in range(idx, len(self.nums)):
+            self.nums[i] += diff
+
+    def query_range(self, start_idx, end_idx):
+        if start_idx == 0:
+            return self.prefix[end_idx]
+        return self.prefix[end_idx] - self.prefix[start_idx]
+
+</code></pre>
+<p>Time Complexity: 
+- Update Index: O(n)
+- Query Range: O(1)</p>
+<p>Space Complexity: O(n)</p>
+<p>The disadvantage of using the above solution is, if there are many updates (n update operations), then the time complexity would be n^2</p>
+<p>For both large update operation and large range query operations, we can solve it via Segment trees and Binary Index Trees.</p>
+<p>Following is the implementation of Segment Tree</p>
+<pre><code class="language-python">
+class Nums:
+    &quot;&quot;&quot;
+    This implementation of segment tree is based on the recursion 
+
+    References: 
+    1. https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
+    2. https://www.hackerearth.com/practice/data-structures/advanced-data-structures/segment-trees/tutorial/
+    3. https://leetcode.com/problems/range-sum-query-mutable/discuss/1280869/Python%3A-All-possible-methods-Explained-with-time-and-space-complexity
+
+    &quot;&quot;&quot;
+    def __init__(self, nums):
+        self.nums = nums 
+        self.nums_length = len(nums)
+        self.tree = [0] * (4 * self.nums_length) # 0 to n -1 would be root nodes and n to 2 * n would be the input numbers which will be child nodes, for recursive solutions 4*n nodes are required
+        self._build_tree(0, 0, self.nums_length - 1)
+        self.lazy = [0] * (4 * self.nums_length) # this would be used for lazily updating the range queries
+
+    def _build_tree(self, tree_idx, start, end):
+
+        &quot;&quot;&quot;
+        Consider the example nums array: [2,4,7,11]
+        tree array initialization would be: [0, 0, 0, 0, 0, 0, 0, 0] 
+
+        following is the stack trace
+
+        _build_tree(0, 0, 3) - [24, 6, 18, 2, 4, 7, 11, 0] step 7
+            _build_tree(1, 0, 1) - [0, 6, 0, 2, 4, 0, 0, 0] step 3
+                _build_tree(3, 0, 0) - [0, 0, 0, 2, 0, 0, 0, 0] step 1
+                _build_tree(4, 1, 1) - [0, 0, 0, 2, 4, 0, 0, 0] step 2
+            _build_tree(2, 2, 3) - [0, 6, 18, 2, 4, 7, 11, 0] step 6
+                _build_tree(5, 2, 2) - [0, 6, 0, 2, 4, 7, 0, 0] step 4
+                _build_tree(6, 3, 3) - [0, 6, 0, 2, 4, 7, 11, 0] step 5
+        &quot;&quot;&quot;
+
+        if start == end:
+            self.tree[tree_idx] = self.nums[start]
+            return
+
+        mid = start + (end - start) // 2
+        self._build_tree(2*tree_idx + 1, start, mid)
+        self._build_tree(2*tree_idx + 2, mid + 1, end)
+        self.tree[tree_idx] = self._merge(self.tree[2*tree_idx + 1], self.tree[2*tree_idx + 2])
+
+    def _merge(self, val1, val2):
+        &quot;&quot;&quot;
+        This is for merging of two nodes, left and right child. In this case we are 
+        &quot;&quot;&quot;
+        return val1 + val2
+
+    def update_index(self, tree_idx, start_idx, end_idx, arr_idx, value):
+        # this place arry_idx will also be equal
+        if start_idx == end_idx:
+            self.tree[tree_idx] = value
+            return
+
+        mid = start_idx + (end_idx - start_idx) // 2
+        if arr_idx &gt; mid:
+            self.update_index(2*tree_idx + 2, mid + 1, end_idx, arr_idx, value)
+        elif arr_idx &lt;= mid:
+            self.update_index(2*tree_idx + 1, start_idx, mid, arr_idx, value)
+
+        self.tree[tree_idx] = self._merge(self.tree[2*tree_idx + 1], self.tree[2*tree_idx + 2])
+
+
+    def query_range(self, tree_idx, start_idx, end_idx, query_start, query_end):
+        # outside of the overlapping range
+        if start_idx &gt; query_end or end_idx &lt; query_start:
+            return 0
+
+        &quot;&quot;&quot;
+        start and end are witin the query_start and query_end which means 
+
+        assuming start = 3, end = 5 and query_start = 1, query_end = 7 
+
+        [3, 5] overlaps with [1, 7] we can directly return the value for [3, 5] and we can search for [1, 2] and [6, 7]
+        &quot;&quot;&quot;
+        if query_start &lt;= start_idx and query_end &gt;= end_idx:
+            return self.tree[tree_idx]
+
+
+        # if partial overlap
+        mid = start_idx + (end_idx - start_idx) // 2
+
+        if query_start &gt; mid:
+            return self.query_range(2*tree_idx + 2, mid + 1, end_idx, query_start, query_end)
+        elif query_end &lt;= mid:
+            return self.query_range(2*tree_idx + 1, start_idx, mid, query_start, query_end)
+
+        &quot;&quot;&quot;
+        if above both scenario's are not valid which means query_start and query_end values are near to start_idx and end_idx
+
+        Example: start = 2, end = 7 and query_start=1, query_end=6
+
+        mid = start + (end - start) // 2 = 2 + (7-2) // 2 =  4
+
+        mid = 4 and it does not follow any of the if else conditions above, in this case we split into two group and process the two queries
+
+        &quot;&quot;&quot;
+        leftQuery = self.query_range(2*tree_idx + 1, start_idx, mid, query_start, mid)
+        rightQuery = self.query_range(2*tree_idx + 2, mid + 1, end_idx, mid + 1, query_end)
+
+        return self._merge(leftQuery, rightQuery)
+
+    def _merge_lazy(self, start, end, tree_idx):
+        &quot;&quot;&quot;
+        Writing this method for the range sum queries and updates, but calculating the min and max in the range, it would be different
+
+        reason for multiplying the (end - start + 1) is as we are summing those many nodes with the value, we are directly calculating the product and updating the value in the node, if both start and end are equal then value will be inserted otherwise for every other root node, we'll update by the number of child nodes
+        &quot;&quot;&quot;
+        return (end - start + 1) * self.lazy[tree_idx] 
+
+
+    def update_index_lazily(self, tree_idx, start, end, start_range, end_range, val):
+        &quot;&quot;&quot;
+        Lazy update will be helpful for the range of updates, rather than the single node update.
+
+        Example: 
+        1. Update [0, 4] with 9
+        2. Update [2, 3] with -8
+        3. Update [3, 4] with 2
+
+        In the above range updates, element 3 is being updated 3 times, 
+        rather than updating at the same time which would increase our time complexity to nlogn for single range update 
+        &quot;&quot;&quot;
+        if self.lazy[tree_idx] != 0: # this means we have some pending updates
+
+            self.tree[tree_idx] += self._merge_lazy(start, end, tree_idx) # udpating the value to the current node 
+
+            if start != end: # if we are not updating to the child node, then pass the lazy value to the child nodes
+                self.lazy[2*tree_idx + 1] += self.lazy[tree_idx]
+                self.lazy[2*tree_idx + 2] += self.lazy[tree_idx]
+
+            # once the lazy value is udpated to the node and its children then we can reset the value back to zero
+            self.lazy[tree_idx] = 0
+
+        if start &gt; end or start_range &gt; end or end_range &lt; start:
+            &quot;this will occur when there is no overlapping window&quot;
+            return 
+
+        if start_range &lt;= start and end &gt;= end_range: # if the segment is fully within the range
+            self.tree[tree_idx] += (end - start + 1) * val # updating the tree index value
+
+            if start != end: # if we are not updating to the child node, then pass the lazy value to the child nodes
+                self.lazy[2*tree_idx + 1] += val
+                self.lazy[2*tree_idx + 2] += val
+
+            return
+
+        mid = start + (end-start) // 2
+        self.update_index_lazily(2*tree_idx + 1, start, mid, start_range, end_range, val)
+        self.update_index_lazily(2*tree_idx + 2, mid + 1, end, start_range, end_range, val)
+
+        self.tree[tree_idx] = self._merge(self.tree[2*tree_idx + 1], self.tree[2*tree_idx + 2])
+
+
+    def query_lazily(self, tree_idx, start, end, query_start, query_end):
+
+        # outside of the overlapping range
+        if start_idx &gt; query_end or end_idx &lt; query_start:
+            return 0
+
+        if self.lazy[tree_idx] != 0: # this means we have some pending updates
+
+            self.tree[tree_idx] += self._merge_lazy(start, end, tree_idx) # udpating the value to the current node 
+
+            if start != end: # if we are not updating to the child node, then pass the lazy value to the child nodes
+                self.lazy[2*tree_idx + 1] += self.lazy[tree_idx]
+                self.lazy[2*tree_idx + 2] += self.lazy[tree_idx]
+
+            # once the lazy value is udpated to the node and its children then we can reset the value back to zero
+            self.lazy[tree_idx] = 0
+
+        &quot;&quot;&quot;
+        start and end are witin the query_start and query_end which means 
+        assuming start = 3, end = 5 and query_start = 1, query_end = 7 
+        [3, 5] overlaps with [1, 7] we can directly return the value for [3, 5] and we can search for [1, 2] and [6, 7]
+        &quot;&quot;&quot;
+        if query_start &lt;= start_idx and query_end &gt;= end_idx:
+            return self.tree[tree_idx]
+
+        # if partial overlap
+        mid = start + (end - start) // 2
+
+        if query_start &gt; mid:
+            return self.query_lazily(2*tree_idx + 2, mid + 1, end_idx, query_start, query_end)
+        elif query_end &lt;= mid:
+            return self.query_lazily(2*tree_idx + 1, start_idx, mid, query_start, query_end)
+
+        &quot;&quot;&quot;
+        if above both scenario's are not valid which means query_start and query_end values are near to start_idx and end_idx
+        Example: start = 2, end = 7 and query_start=1, query_end=6
+        mid = start + (end - start) // 2 = 2 + (7-2) // 2 =  4
+
+        mid = 4 and it does not follow any of the if else conditions above, in this case we split into two group and process the two queries
+
+        &quot;&quot;&quot;
+        leftQuery = self.query_lazily(2*tree_idx + 1, start_idx, mid, query_start, mid)
+        rightQuery = self.query_lazily(2*tree_idx + 2, mid + 1, end_idx, mid + 1, query_end)
+
+        return self._merge(leftQuery, rightQuery) # this operation is dependent on the question, here we are doing sum
+
+</code></pre>
+<p>The above program is a recursive way, we can write the same in non recursive way as well. Following is the code example</p>
+<pre><code class="language-python">
+class Nums:
+    &quot;&quot;&quot;
+    This is a non recursive way of implementing the segment tree, Much efficient way is described in this https://www.geeksforgeeks.org/segment-tree-efficient-implementation/
+    References: 
+    1. Editorial section of https://leetcode.com/problems/range-sum-query-mutable/solution/ 
+    2. https://github.com/jakobkogler/Algorithm-DataStructures/blob/master/RangeQuery/SegmentTree.py (https://leetcode.com/problems/range-sum-query-mutable/discuss/646774/Segment-tree-recursive-iterative-Binary-index-iterative-explained)
+    &quot;&quot;&quot;
+    def __init__(self, nums):
+        self.nums = nums 
+        self.nums_length = len(nums)
+        self.tree = [0] * (2 * self.nums_length) # 0 to n -1 would be root nodes and n to 2 * n would be the input numbers which will be child nodes
+        self._build_tree()
+
+    def _merge(self, val1, val2):
+        &quot;&quot;&quot;
+        Here we are trying to sum the values, for min segment tree, we need to find the min between the values
+        &quot;&quot;&quot;
+        return val1 + val2
+
+    def _build_tree(self):
+        # child nodes start from the nums_length index
+        for i in range(self.nums_length, 2*self.nums_length):
+            self.tree[i] = self.nums[i-self.nums_length]
+
+        # parent nodes, will occupy the starting positions, total number of nodes is (2*n - 1)
+        for i in range(self.nums_length -1, -1, 0):
+            self.tree[i] = self._merge(self.tree[2*i], self.tree[2*i + 1])
+
+    def update_idx(self, idx, value):
+
+        &quot;&quot;&quot;
+        Lets understand by taking an example
+        nums = [2,4,7,11]
+        tree = [0, 24, 6, 18, 2, 4, 7, 11]
+
+        udpate idx = 3, val = 5
+        step 1 : [0, 24, 6, 18, 2, 4, 7, 5] # updating the value at idx + nums_length
+                  idx = 7
+        Go into the loop
+
+        Step 2: 
+                left = 6, right = 7
+                tree[7//2] = tree[3] = tree[6] + tree[7] = 7 + 5 = 12
+                [0, 24, 6, 12, 2, 4, 7, 5] # updating the value at 3rd idx
+
+        step 3: idx = 3
+                right = 3, left = 2
+                tree[1] = tree[3] + tree[2] = 18
+                [0, 18, 6, 12, 2, 4, 7, 5] # updating the value at 3rd idx
+
+        In the next iteration idx is 1 so loop will stop
+        &quot;&quot;&quot;
+
+        idx += self.nums_length # map index to the second half to upate the node 
+        self.tree[idx] = value
+
+        while idx &gt; 1:
+            left = idx
+            right = idx
+            if idx % 2 == 0:
+                right = idx + 1
+            else:
+                left = idx - 1
+            self.tree[idx // 2] = self.tree[left] + self.tree[right]
+            idx //= 2
+
+    def query_range(self, start, end):
+        &quot;&quot;&quot;
+        let's understand with the example
+        nums = [2,4,7,11]
+        tree = [0, 24, 6, 18, 2, 4, 7, 11]
+
+        Query range = [1, 3] // starting with zero index, so final answer should be 4+7+11=22
+        step1:
+            start = 5, end = 8
+        step 2:
+            total += tree[start] =&gt; total += 4 =&gt; total = 4, update start += 1 =&gt; start = 6 
+            start = 3, end = 4
+        step 3:
+            total += tree[start] =&gt; total += 18 =&gt; total = 22, start = 4
+            start = 2, end = 2
+        As the start not less than end, loop will get terminated
+
+        &quot;&quot;&quot;
+        start += self.nums_length
+        end += (self.nums_length + 1)
+
+        total = 0
+        while start &lt; end:
+            if start % 2 == 1:
+                total += self.tree[start]
+                start += 1
+
+            if end % 2 == 1:
+                end -= 1
+                total += self.tree[end]
+
+            start //= 2
+            end //= 2
+        return total
+</code></pre>
+<p>Complete Working Code can be found from <a href="https://leetcode.com/submissions/detail/765114614/">here</a></p>
+<h2 id="binary-index-tree-fenwick-tree">Binary Index Tree - Fenwick Tree</h2>
+<p>Binary Index Tree uses the binary representation of the indexes to store the values in the tree. Following the sample implementation. Binary Index Tree is also used for solving the range queries</p>
+<p>Reference: https://leetcode.com/problems/range-sum-query-mutable/discuss/75753/Java-using-Binary-Indexed-Tree-with-clear-explanation</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../binary_search/" class="btn btn-neutral float-left" title="Binary Search"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../sqrt_decomposition/" class="btn btn-neutral float-right" title="Square Root Decomposition">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../binary_search/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../sqrt_decomposition/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
